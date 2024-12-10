@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ProductRepo {
     private List<Product> products;
+    ProductRepo productRepo;
 
     public ProductRepo() {
         products = new ArrayList<>();
@@ -13,13 +15,13 @@ public class ProductRepo {
         return products;
     }
 
-    public Product getProductById(String id) {
+    public Optional <Product> getProductById(String id) {
         for (Product product : products) {
             if (product.id().equals(id)) {
-                return product;
+                return Optional.of(product) ;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Product addProduct(Product newProduct) {
@@ -28,11 +30,21 @@ public class ProductRepo {
     }
 
     public void removeProduct(String id) {
-        for (Product product : products) {
-           if (product.id().equals(id)) {
-               products.remove(product);
-               return;
-           }
-        }
+//        for (Product product : products) {
+//           if (product.id().equals(id)) {
+//               products.remove(product);
+//               return;
+//           }
+//        }
+        products.removeIf(product -> product.id().equals(id));
     }
+    public void findAndPrintProduct(String productId) {
+        productRepo.getProductById(productId)
+                .ifPresentOrElse(
+                        product -> System.out.println("Found product: " + product.name()),
+                        () -> System.out.println("Product with ID " + productId + " not found.")
+                );
+    }
+
+
 }
