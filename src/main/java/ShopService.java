@@ -46,4 +46,23 @@ public class ShopService {
                 .filter(order -> order.status().equals(status))
                 .toList();
     }
+
+    public Order updateOrder(String orderId, OrderStatus newStatus) {
+        // Find the order by ID
+        Order existingOrder = orderRepo.getOrderById(orderId);
+
+        if (existingOrder == null) {
+            throw new ProductNotFoundException("Order with ID " + orderId + " not found");
+        }
+
+        // Use @With to create a new instance with the updated status
+        Order updatedOrder = existingOrder.withStatus(newStatus);
+
+        // Remove the old order and replace it with the updated one
+        orderRepo.removeOrder(orderId);
+        orderRepo.addOrder(updatedOrder);
+
+        return updatedOrder;
+    }
+
 }
