@@ -1,7 +1,5 @@
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class ShopService {
     private ProductRepo productRepo = new ProductRepo();
@@ -14,6 +12,7 @@ public class ShopService {
     }
 
     public Order addOrder(List<String> productIds) {
+        Set<String> uniqueProductIds = new HashSet<>(productIds);
         List<Product> products = new ArrayList<>();
 //        for (String productId : productIds) {
 //            Optional <Product> productToOrder = productRepo.getProductById(productId);

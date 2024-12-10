@@ -8,7 +8,8 @@ public class ProductRepo {
 
     public ProductRepo() {
         products = new ArrayList<>();
-        products.add(new Product("1", "Apfel"));
+        products.add(new Product("1", "Orange"));
+        products.add(new Product("2", "Apple"));
     }
 
     public List<Product> getProducts() {
