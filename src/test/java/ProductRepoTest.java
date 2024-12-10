@@ -1,3 +1,5 @@
+import org.junit.jupiter.api.Test;
+
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +45,22 @@ class ProductRepoTest {
         //THEN
         Product expected = new Product("2", "Banane");
         assertEquals(actual, expected);
-        assertEquals(repo.getProductById("2"), expected);
+        assertTrue(repo.getProductById("2").isPresent());
+        assertEquals(expected, repo.getProductById("2").get());
+    }
+
+
+    @Test
+    void addOrderThrowsExceptionForMissingProduct(){
+        ProductRepo productRepo = new ProductRepo();
+        OrderRepo orderRepo = new OrderMapRepo();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
+        List<String> invalidProductIds = List.of("8"); // Product ID "999" does not exis
+        Exception exception = assertThrows(
+                ProductNotFoundException.class,
+                () -> shopService.addOrder(invalidProductIds)
+        );
+        assertEquals("Product with ID 8 does not exist", exception.getMessage());
     }
 
     @org.junit.jupiter.api.Test
