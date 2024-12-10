@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,7 +20,7 @@ class ShopServiceTest {
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")),OrderStatus.COMPLETED);
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")),OrderStatus.COMPLETED, Instant.now());
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }
@@ -45,7 +46,7 @@ class ShopServiceTest {
         OrderRepo orderRepo = new OrderMapRepo();
         ShopService shopService = new ShopService(productRepo, orderRepo);
         List<Product> products = List.of(new Product("1","Apfel"));
-        Order order = new Order(UUID.randomUUID().toString(), products, OrderStatus.IN_DELIVERY);
+        Order order = new Order(UUID.randomUUID().toString(), products, OrderStatus.IN_DELIVERY,Instant.now());
         orderRepo.addOrder(order);
 
         //When
@@ -57,4 +58,21 @@ class ShopServiceTest {
         assertEquals(order.products(), updatedOrder.products());
 
     }
+    @Test
+    void addOrderIncludesTimestamp() {
+        // GIVEN
+        ProductRepo productRepo = new ProductRepo();
+        OrderRepo orderRepo = new OrderMapRepo();
+        ShopService shopService = new ShopService(productRepo, orderRepo);
+        List<String> productIds = List.of("1");
+
+        // WHEN
+        Order newOrder = shopService.addOrder(productIds);
+
+        // THEN
+        assertNotNull(newOrder.timestamp());
+        assertTrue(newOrder.timestamp().isBefore(Instant.now()));
+    }
 }
+
+
