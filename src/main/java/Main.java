@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,6 +29,15 @@ public class Main {
 
         System.out.println(order1);
         System.out.println(order2);
+
+
+        System.out.println("____________OldestOrderPerStatus____________");
+
+        Map<OrderStatus, Order> oldestOrders = shopService.getOldestOrderPerStatus();
+
+        oldestOrders.forEach((status, order) -> {
+            System.out.println("Status: " + status + ", Oldest Order: " + order);
+        });
 
 
 

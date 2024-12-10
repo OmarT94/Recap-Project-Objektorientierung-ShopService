@@ -1,5 +1,6 @@
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ShopService {
     private ProductRepo productRepo = new ProductRepo();
@@ -66,5 +67,24 @@ public class ShopService {
 
         return updatedOrder;
     }
+
+    public Map<OrderStatus,Order> getOldestOrderPerStatus(){
+        List<Order>orders =orderRepo.getOrders();
+
+        return orders.stream()
+                .collect(Collectors.groupingBy(
+                        Order ::status,
+                        Collectors.minBy(Comparator.comparing(Order::timestamp))
+                ))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> entry.getValue().orElse(null)
+                ));
+    }
+
+
+
 
 }
